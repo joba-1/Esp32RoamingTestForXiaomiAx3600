@@ -54,13 +54,15 @@ void handleRoot() {
 }
 
 void handleReset() {
-  httpServer.send(200, "text/html", "<META http-equiv=\"refresh\" content=\"5;URL=/\">Rebooting...");
+  httpServer.send(200, "text/html", 
+    "<META http-equiv=\"refresh\" content=\"5;URL=/\">Rebooting...");
   delay(500);
   ESP.restart();
 }
 
 void handleNotFound() { 
-  httpServer.send(404, "text/html", PAGE); 
+  httpServer.send(404, "text/html", 
+    "<META http-equiv=\"refresh\" content=\"5;URL=/\">Page not found! Redirecting..."); 
 }
 
 void setHostname() {
