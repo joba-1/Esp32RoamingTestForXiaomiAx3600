@@ -84,7 +84,7 @@ void stayConnected(bool wlanConnected) {
     if (disconnected_since == 0) {
       disconnected_since = now;
     }
-    else if ((now - disconnected_since) > 1000 * 60) {
+    else if ((now - disconnected_since) > 1000 * 60 * 5) {
       struct tm tmNow;
       getLocalTime(&tmNow);
       log("Restart", &tmNow); // serial only...
@@ -136,17 +136,19 @@ void loop() {
 
         char msg[80];
         snprintf(msg, sizeof(msg), "Host %s %s started with IP %s\n",
-                 WiFi.getHostname(), VERSION, WiFi.localIP().toString().c_str());
+          WiFi.getHostname(), VERSION, WiFi.localIP().toString().c_str());
         Serial.print(msg);
         syslog.log(LOG_NOTICE, msg);
       }
       else {
         log("Disconnect", &disconnect_time);
       }
+      char msg[80];
+      snprintf(msg, sizeof(msg), "Connect with MAC %s",
+        WiFi.macAddress().c_str());
       struct tm now;
       getLocalTime(&now);
-      log("Connect", &now);
-      log(WiFi.macAddress().c_str(), &disconnect_time);
+      log(msg, &now);
     }
 
     long newRssi = WiFi.RSSI();
@@ -165,6 +167,7 @@ void loop() {
         if (++lowRssiCount > 100) {
           struct tm now;
           getLocalTime(&now);
+
           log("Reconnect low RSSI", &now);
           delay(500);
           WiFi.reconnect();
