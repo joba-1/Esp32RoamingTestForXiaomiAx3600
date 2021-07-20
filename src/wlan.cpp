@@ -82,6 +82,7 @@ void wlanTask(void *parms) {
 
   Serial.printf("Task '%s' running on core %u\n", pcTaskGetTaskName(NULL), xPortGetCoreID());
 
+  /* no MAC change
   wifi_init_config_t initCfg = WIFI_INIT_CONFIG_DEFAULT();
   esp_wifi_init(&initCfg);
 
@@ -100,12 +101,14 @@ void wlanTask(void *parms) {
     printMac("retry magic", rtcMac);
     esp_wifi_set_mac(WIFI_IF_STA, rtcMac);
   }
+  */
 
-    setHostname();
-    WiFi.config(staticIp, gateway, subnet, primaryDns);
+  setHostname();
+  // no MAC change -> no static IP needed. Use DHCP
+  // WiFi.config(staticIp, gateway, subnet, primaryDns);
 
-    do {
-      WiFi.begin(WlanConfig::Ssid, WlanConfig::Password);
+  do {
+    WiFi.begin(WlanConfig::Ssid, WlanConfig::Password);
   } while (WiFi.waitForConnectResult() != WL_CONNECTED);
 
   configTime(gmtOffset_sec, daylightOffset_sec, WiFi.gatewayIP().toString().c_str(), ntpServer);

@@ -165,9 +165,13 @@ void loop() {
         if (++lowRssiCount > 100) {
           struct tm now;
           getLocalTime(&now);
-          log("Restart low RSSI", &now);
+          log("Reconnect low RSSI", &now);
           delay(500);
-          ESP.restart();
+          WiFi.reconnect();
+
+          // log("Restart low RSSI", &now);
+          // delay(500);
+          // ESP.restart();
         }
       } else {
         lowRssiCount = 0;
